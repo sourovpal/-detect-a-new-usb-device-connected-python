@@ -23,6 +23,8 @@ while True:
 
 
 
+
+
 import wmi
 
 raw_wql = "SELECT * FROM __InstanceCreationEvent WITHIN 2 WHERE TargetInstance ISA \'Win32_USBHub\'"
@@ -31,3 +33,25 @@ watcher = c.watch_for(raw_wql=raw_wql)
 while 1:
     usb = watcher()
     print(usb)
+
+
+
+
+
+
+import wmi
+
+device_connected_wql = "SELECT * FROM __InstanceCreationEvent WITHIN 2 WHERE TargetInstance ISA \'Win32_Keyboard\'"
+device_disconnected_wql = "SELECT * FROM __InstanceDeletionEvent WITHIN 2 WHERE TargetInstance ISA \'Win32_Keyboard\'"
+
+c = wmi.WMI()
+connected_watcher = c.watch_for(raw_wql=device_connected_wql)
+disconnected_watcher = c.watch_for(raw_wql=device_disconnected_wql)
+
+while 1:
+    connected = connected_watcher()
+    disconnected = disconnected_watcher()
+    if connected:
+        print("Keyboard connected")
+    if disconnected:
+        print("Keyboard disconnected")
